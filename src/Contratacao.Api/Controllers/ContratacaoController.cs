@@ -76,7 +76,7 @@ namespace Contratacao.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("Excluir")]
+        [Route("Excluir/{id}")]
         [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
