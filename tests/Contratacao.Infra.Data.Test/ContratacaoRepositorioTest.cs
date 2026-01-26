@@ -121,6 +121,8 @@ namespace Contratacao.Infra.Data.Test
 
         }
 
+       
+
         [Test]
         public async Task ObterTodosdAsync_DevePersistir()
         {
@@ -129,6 +131,18 @@ namespace Contratacao.Infra.Data.Test
                                 .Create();
             await _repositorio.AdicionarAsync(apolice);
             var retorno = await _repositorio.ObterTodosAsync();
+
+            Assert.AreEqual(1, _context.Set<Apolice>().Count());
+        }
+
+        [Test]
+        public async Task ObterDadosContratacaoClienteAsync_DevePersistir()
+        {
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
+            await _repositorio.AdicionarAsync(apolice);
+            var retorno = await _repositorio.ObterDadosContratacaoClienteAsync();
 
             Assert.AreEqual(1, _context.Set<Apolice>().Count());
         }

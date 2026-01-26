@@ -1,12 +1,14 @@
 ﻿using Contratacao.Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Contratacao.Domain.Entidades
 {
+    [ExcludeFromCodeCoverage]
     public class Proposta
     {
         public int Id { get; set; }
