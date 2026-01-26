@@ -157,7 +157,7 @@ namespace Contratacao.Application.Test
                                 .Without(p => p.Proposta)
                                 .Create<Apolice>();
 
-            _repositorioMock.Setup(r => r.ObterPorIdAssyn(entity.Id))
+            _repositorioMock.Setup(r => r.ObterPorIdAsync(entity.Id))
                             .ReturnsAsync(entity);
 
             _mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))

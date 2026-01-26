@@ -74,7 +74,7 @@ namespace Contratacao.Infra.Data.Repositorio
             return await query.ToListAsync();
         }
 
-        public async Task<T> ObterPorIdAssyn(int id)
+        public async Task<T> ObterPorIdAsync(int id)
         {
             return await _context.Set<T>().FindAsync(id);
         }

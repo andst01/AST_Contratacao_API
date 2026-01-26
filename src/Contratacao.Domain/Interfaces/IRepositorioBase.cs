@@ -17,7 +17,7 @@ namespace Contratacao.Domain.Interfaces
 
         Task<List<T>> ObterTodosAsync();
 
-        Task<T> ObterPorIdAssyn(int id);
+        Task<T> ObterPorIdAsync(int id);
 
         Task<IEnumerable<T>> ObterPorFiltroAsync(Expression<Func<T, bool>> filter = null,
                                       Func<IQueryable<T>, IQueryable<T>> include = null,

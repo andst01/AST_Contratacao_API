@@ -12,7 +12,7 @@ namespace Contratacao.Application.DTO
         public int Id { get; set; }
         public string NumeroApolice { get; set; }
         public int IdProposta { get; set; }
-        public EnumStatusApolice Status { get; set; }
+       
         public DateTime DataInicioVigencia { get; set; }
         public DateTime? DataFimVigencia { get; set; }
         public decimal? PremioFinal { get; set; }
@@ -21,6 +21,10 @@ namespace Contratacao.Application.DTO
         public int? QuantidadeParcelas { get; set; }
         public DateTime DataContratacao { get; set; }
 
+        public int CodigoStatus { get; set; }
+
+        public EnumStatusProposta? StatusProposta { get; set; }
+        public string Status { get; set; }
         public string NumeroProposta { get; set; }
 
         public string NomeCliente { get; set; }

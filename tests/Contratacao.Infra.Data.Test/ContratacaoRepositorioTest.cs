@@ -114,7 +114,7 @@ namespace Contratacao.Infra.Data.Test
                                 .Create();
 
             await _repositorio.AdicionarAsync(apolice);
-            var retorno = await _repositorio.ObterPorIdAssyn(apolice.Id);
+            var retorno = await _repositorio.ObterPorIdAsync(apolice.Id);
 
             Assert.NotNull(retorno);
 

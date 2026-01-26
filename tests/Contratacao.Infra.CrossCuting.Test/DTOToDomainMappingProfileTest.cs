@@ -39,7 +39,7 @@ namespace Contratacao.Infra.CrossCuting.Test
             // Arrange
             var now = DateTime.UtcNow;
             var dto = Fixture.Create<ApoliceDTO>();
-           
+            dto.CodigoStatus = 2;
 
             // Act
             var entidade = _mapper.Map<Apolice>(dto);

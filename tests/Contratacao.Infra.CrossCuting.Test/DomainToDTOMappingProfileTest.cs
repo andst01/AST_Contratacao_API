@@ -45,8 +45,17 @@ namespace Contratacao.Infra.CrossCuting.Test
             // Arrange
             var now = DateTime.UtcNow;
             var entidade = Fixture.Build<Apolice>()
-                                    .Without(p => p.Proposta)
-                                    .Create();
+                                    .With(p => p.Proposta,
+                                    new Proposta()
+                                    {
+                                        Id = 10,
+                                        NumeroProposta = "Teste",
+                                        Cliente = new Cliente()
+                                        {
+                                            Id = 10,
+                                            Nome = "Cliente Teste"
+                                        }
+                                    }).Create();
 
 
             // Act

@@ -1,5 +1,7 @@
 ﻿using Contratacao.Application;
 using Contratacao.Application.Interfaces;
+using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Service;
 using Contratacao.Domain.Interfaces;
 using Contratacao.Infra.Data.Contexto;
 using Contratacao.Infra.Data.Repositorio;
@@ -31,7 +33,8 @@ namespace Contratacao.Infra.CrossCuting
 
             services.AddScoped(typeof(IAppBase<,>), typeof(AppBase<,>));
             services.AddScoped<IApoliceApp, ApoliceApp>();
-
+            services.AddScoped<IApoliceService, ApoliceService>();
+           
             #endregion
 
             services.AddScoped<ContratacaoDbContext>();

@@ -52,7 +52,7 @@ namespace Contratacao.Application
 
         public async Task<TDto> ObterPorIdAssyn(int id)
         {
-            var retorno = await _repositorio.ObterPorIdAssyn(id);
+            var retorno = await _repositorio.ObterPorIdAsync(id);
 
             return _mapper.Map<TDto>(retorno);
 

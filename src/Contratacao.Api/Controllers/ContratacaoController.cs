@@ -1,18 +1,22 @@
 ﻿using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
+using Contratacao.Application.Interfaces.Service;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Contratacao.Api.Controllers
 {
-    public class ContratacaoController : Controller
+    public class ContratacaoController : ControllerBase
     {
         private readonly IApoliceApp _application;
+        private readonly IApoliceService _service;
         private readonly ILogger<ContratacaoController> _logger;
 
         public ContratacaoController(IApoliceApp application,
+                                     IApoliceService service,
                                      ILogger<ContratacaoController> logger)
         {
             _application = application;
+            _service = service;
             _logger = logger;
         }
 
@@ -23,7 +27,7 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterPorId(int id)
         {
-            _logger.LogInformation("Obtendo proposta com ID: {Id} ", id);
+            _logger.LogInformation("Obtendo contratação com ID: {Id} ", id);
             return Ok(await _application.ObterPorIdAssyn(id));
         }
 
@@ -34,7 +38,7 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterTodos()
         {
-            _logger.LogInformation("Obtendo todas as propostas");
+            _logger.LogInformation("Obtendo todas as contratações");
             return Ok(await _application.ObterTodosAsync());
         }
 
@@ -45,7 +49,7 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterDadosContratacaoCliente()
         {
-            _logger.LogInformation("Obtendo todas as contratacoes cliente e proposta");
+            _logger.LogInformation("Obtendo todas as contratações cliente e proposta");
             return Ok(await _application.ObterDadosContratacaoClienteAsync());
         }
 
@@ -54,10 +58,10 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> New([FromBody] ApoliceDTO request)
+        public async Task<IActionResult> Novo([FromBody] ApoliceDTO request)
         {
-            _logger.LogInformation("Adicionando nova proposta");
-            return Ok(await _application.AdicionarAsync(request));
+            _logger.LogInformation("Adicionando nova contratação");
+            return Ok(await _service.CriarApoliceAsync(request));
         }
 
         [HttpPut]
@@ -65,10 +69,21 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update([FromBody] ApoliceDTO request)
+        public async Task<IActionResult> Atualizar([FromBody] ApoliceDTO request)
         {
-            _logger.LogInformation("Atualizando proposta com ID: {Id} ", request.Id);
+            _logger.LogInformation("Atualizando contratação com ID: {Id} ", request.Id);
             return Ok(await _application.AtualizarAsync(request, request.Id));
+        }
+
+        [HttpDelete]
+        [Route("Excluir")]
+        [ProducesResponseType(typeof(int), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Excluir(int id)
+        {
+            _logger.LogInformation("Excluindo contratação com ID: {Id} ", id);
+            return Ok(await _application.ExcluirAsync(id));
         }
     }
 }
