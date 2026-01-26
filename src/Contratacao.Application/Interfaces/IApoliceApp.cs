@@ -10,5 +10,6 @@ namespace Contratacao.Application.Interfaces
 {
     public interface IApoliceApp : IAppBase<Apolice, ApoliceDTO>
     {
+        Task<List<ApoliceDTO>> ObterDadosContratacaoClienteAsync();
     }
 }

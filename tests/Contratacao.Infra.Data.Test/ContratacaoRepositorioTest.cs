@@ -37,8 +37,10 @@ namespace Contratacao.Infra.Data.Test
         [Test]
         public async Task AdicionarAsync_DevePersistir()
         {
-            var apolice = Fixture.Create<Apolice>();
-            
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
+
             await _repositorio.AdicionarAsync(apolice);
 
             Assert.AreEqual(1, _context.Set<Apolice>().Count());
@@ -49,7 +51,9 @@ namespace Contratacao.Infra.Data.Test
         public async Task AtualizarAsync_DevePersistir()
         {
 
-            var apolice = Fixture.Create<Apolice>();
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
             apolice.NumeroApolice = "Atualizado-123";
             await _repositorio.AdicionarAsync(apolice);
             await _repositorio.AtualizarAsync(apolice, apolice.Id);
@@ -63,14 +67,18 @@ namespace Contratacao.Infra.Data.Test
         public async Task AtualizarAsync_QuandoEntidadeNaoEstaRastreada_DeveAtualizar()
         {
             // Arrange
-            var apoliceOriginal = Fixture.Create<Apolice>(); ;
+            var apoliceOriginal = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
 
             await _repositorio.AdicionarAsync(apoliceOriginal);
 
             _context.ChangeTracker.Clear();
 
             // Nova instância com o MESMO Id
-            var apoliceAtualizada = Fixture.Create<Apolice>(); ;
+            var apoliceAtualizada = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create(); ;
             apoliceAtualizada.Id = apoliceOriginal.Id;
             apoliceAtualizada.NumeroApolice = "ALTERADO";
 
@@ -88,7 +96,9 @@ namespace Contratacao.Infra.Data.Test
         [Test]
         public async Task ExcluirAsync_DevePersistir()
         {
-            var apolice = Fixture.Create<Apolice>();
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
             await _repositorio.AdicionarAsync(apolice);
 
             await _repositorio.ExcluirAsync(apolice.Id);
@@ -99,7 +109,9 @@ namespace Contratacao.Infra.Data.Test
         [Test]
         public async Task ObterPorIdAsync_DevePersistir()
         {
-            var apolice = Fixture.Create<Apolice>();
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
 
             await _repositorio.AdicionarAsync(apolice);
             var retorno = await _repositorio.ObterPorIdAssyn(apolice.Id);
@@ -112,7 +124,9 @@ namespace Contratacao.Infra.Data.Test
         [Test]
         public async Task ObterTodosdAsync_DevePersistir()
         {
-            var apolice = Fixture.Create<Apolice>();
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
             await _repositorio.AdicionarAsync(apolice);
             var retorno = await _repositorio.ObterTodosAsync();
 
@@ -124,10 +138,14 @@ namespace Contratacao.Infra.Data.Test
         {
 
 
-            var apolice1 = Fixture.Create<Apolice>();
+            var apolice1 = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
             apolice1.NumeroApolice = "A123";
 
-            var proposta2 = Fixture.Create<Apolice>();
+            var proposta2 = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
             proposta2.NumeroApolice = "B456";
 
             await _context.Set<Apolice>().AddRangeAsync(apolice1, proposta2);

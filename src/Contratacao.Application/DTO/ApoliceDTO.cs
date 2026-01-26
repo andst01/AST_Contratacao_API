@@ -11,14 +11,18 @@ namespace Contratacao.Application.DTO
     {
         public int Id { get; set; }
         public string NumeroApolice { get; set; }
-        public Guid PropostaId { get; set; }
-        public EnumStatusProposta Status { get; set; }
+        public int IdProposta { get; set; }
+        public EnumStatusApolice Status { get; set; }
         public DateTime DataInicioVigencia { get; set; }
-        public DateTime DataFimVigencia { get; set; }
-        public decimal PremioFinal { get; set; }
-        public decimal ValorCobertura { get; set; }
+        public DateTime? DataFimVigencia { get; set; }
+        public decimal? PremioFinal { get; set; }
+        public decimal? ValorCobertura { get; set; }
         public string FormaPagamento { get; set; }
-        public int QuantidadeParcelas { get; set; }
+        public int? QuantidadeParcelas { get; set; }
         public DateTime DataContratacao { get; set; }
+
+        public string NumeroProposta { get; set; }
+
+        public string NomeCliente { get; set; }
     }
 }

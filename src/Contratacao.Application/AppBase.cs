@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace Contratacao.Application
 {
-    public class AppBase<TEntity, TViewModel> : IAppBase<TEntity, TViewModel>
+    public class AppBase<TEntity, TDto> : IAppBase<TEntity, TDto>
        where TEntity : class
-       where TViewModel : class
+       where TDto : class
     {
 
         protected readonly IRepositorioBase<TEntity> _repositorio;
@@ -23,25 +23,25 @@ namespace Contratacao.Application
             _repositorio = repositorio;
             _mapper = mapper;
         }
-        public async Task<TViewModel> AdicionarAsync(TViewModel viewModel)
+        public async Task<TDto> AdicionarAsync(TDto viewModel)
         {
 
             var entity = _mapper.Map<TEntity>(viewModel);
 
             var retorno = await _repositorio.AdicionarAsync(entity);
 
-            return _mapper.Map<TViewModel>(entity);
+            return _mapper.Map<TDto>(entity);
         }
 
       
 
-        public async Task<TViewModel> AtualizarAsync(TViewModel viewModel, object id)
+        public async Task<TDto> AtualizarAsync(TDto viewModel, object id)
         {
             var entity = _mapper.Map<TEntity>(viewModel);
 
             var retorno = await _repositorio.AtualizarAsync(entity, id);
 
-            return _mapper.Map<TViewModel>(retorno);
+            return _mapper.Map<TDto>(retorno);
         }
 
         public async Task<int> ExcluirAsync(int id)
@@ -50,19 +50,19 @@ namespace Contratacao.Application
         }
 
 
-        public async Task<TViewModel> ObterPorIdAssyn(int id)
+        public async Task<TDto> ObterPorIdAssyn(int id)
         {
             var retorno = await _repositorio.ObterPorIdAssyn(id);
 
-            return _mapper.Map<TViewModel>(retorno);
+            return _mapper.Map<TDto>(retorno);
 
         }
 
-        public async Task<List<TViewModel>> ObterTodosAsync()
+        public async Task<List<TDto>> ObterTodosAsync()
         {
             var retorno = await _repositorio.ObterTodosAsync();
 
-            return _mapper.Map<List<TViewModel>>(retorno);
+            return _mapper.Map<List<TDto>>(retorno);
         }
     }
 }

@@ -17,15 +17,21 @@ namespace Contratacao.Infra.Data.Mapeamento
 
             builder.HasKey(a => a.Id);
             builder.Property(a => a.NumeroApolice).IsRequired().HasMaxLength(50);
-            builder.Property(a => a.PropostaId).IsRequired();
+            builder.Property(a => a.IdProposta).IsRequired();
             builder.Property(a => a.Status).IsRequired();
             builder.Property(a => a.DataInicioVigencia).IsRequired();
-            builder.Property(a => a.DataFimVigencia).IsRequired();
-            builder.Property(a => a.PremioFinal).IsRequired().HasColumnType("decimal(18,2)");
-            builder.Property(a => a.ValorCobertura).IsRequired().HasColumnType("decimal(18,2)");
+            builder.Property(a => a.DataFimVigencia).IsRequired(false);
+            builder.Property(a => a.PremioFinal).IsRequired(false).HasColumnType("decimal(18,2)");
+            builder.Property(a => a.ValorCobertura).IsRequired(false).HasColumnType("decimal(18,2)");
             builder.Property(a => a.FormaPagamento).IsRequired().HasMaxLength(50);
-            builder.Property(a => a.QuantidadeParcelas).IsRequired();
+            builder.Property(a => a.QuantidadeParcelas).IsRequired(false);
             builder.Property(a => a.DataContratacao).IsRequired();
+            builder.HasOne(a => a.Proposta)
+                   .WithOne(p => p.Apolice)
+                   .HasForeignKey<Apolice>(a => a.IdProposta)
+                   .OnDelete(DeleteBehavior.Cascade);
+
+
 
         }
     }

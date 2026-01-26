@@ -8,6 +8,10 @@ namespace Contratacao.Infra.Data.Contexto
     {
         public DbSet<Apolice> Apolices { get; set; }
 
+        public DbSet<Cliente> Clientes { get; set; }
+
+        public DbSet<Proposta> Propostas { get; set; }
+
         public ContratacaoDbContext(DbContextOptions<ContratacaoDbContext> options)
           : base(options)
         {
@@ -16,6 +20,8 @@ namespace Contratacao.Infra.Data.Contexto
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ApoliceMap());
+            modelBuilder.ApplyConfiguration(new ClienteMap());
+            modelBuilder.ApplyConfiguration(new PropostaMap());
 
             base.OnModelCreating(modelBuilder);
             

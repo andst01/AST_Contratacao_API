@@ -8,9 +8,17 @@ namespace Contratacao.Application
 {
     public class ApoliceApp : AppBase<Apolice, ApoliceDTO>, IApoliceApp
     {
-        public ApoliceApp(IRepositorioBase<Apolice> repositorio, 
-                          IMapper mapper) : base(repositorio, mapper)
+        private readonly IApoliceRepoitorio _apoliceRepoitorio;
+        public ApoliceApp(IApoliceRepoitorio apoliceRepoitorio,
+                          IMapper mapper) : base(apoliceRepoitorio, mapper)
         {
+            _apoliceRepoitorio = apoliceRepoitorio;
+        }
+
+        public async Task<List<ApoliceDTO>> ObterDadosContratacaoClienteAsync()
+        {
+            var retorno = await _apoliceRepoitorio.ObterDadosContratacaoClienteAsync();
+            return _mapper.Map<List<ApoliceDTO>>(retorno);
         }
     }
 }

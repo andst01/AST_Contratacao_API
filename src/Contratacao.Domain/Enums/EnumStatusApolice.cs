@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace Contratacao.Domain.Enums
 {
-    public enum EnumStatusProposta
+    public enum EnumStatusApolice
     {
-        Criada = 0,
-        EmAnalise = 1,
-        Aprovada = 2,
-        Recusada = 3,
-        Expirada = 4
+        Ativa = 0,
+        Cancelada = 1,
+        Suspensa = 2,
+        Encerrada = 3
     }
 }

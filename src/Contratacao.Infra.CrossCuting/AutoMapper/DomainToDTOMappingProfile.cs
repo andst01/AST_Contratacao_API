@@ -13,7 +13,13 @@ namespace Contratacao.Infra.CrossCuting.AutoMapper
     {
         public DomainToDTOMappingProfile()
         {
-            CreateMap<Apolice, ApoliceDTO>();
+            //CreateMap<Apolice, ApoliceDTO>();
+
+            CreateMap<Apolice, ApoliceDTO>()
+            .ForMember(dest => dest.NumeroProposta,
+                       opt => opt.MapFrom(src => src.Proposta.NumeroProposta))
+            .ForMember(dest => dest.NomeCliente,
+                       opt => opt.MapFrom(src => src.Proposta.Cliente.Nome));
         }
     }
 }

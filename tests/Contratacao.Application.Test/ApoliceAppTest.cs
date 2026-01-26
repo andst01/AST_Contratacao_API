@@ -10,7 +10,7 @@ namespace Contratacao.Application.Test
 {
     public class ApoliceAppTests : AppBaseTest<ApoliceApp>
     {
-        private Mock<IRepositorioBase<Apolice>> _repositorioMock = null!;
+        private Mock<IApoliceRepoitorio> _repositorioMock = null!;
         private Mock<IMapper> _mapperMock = null!;
         private ApoliceApp _app = null!;
 
@@ -18,7 +18,7 @@ namespace Contratacao.Application.Test
         [SetUp]
         public void Setup()
         {
-            _repositorioMock = FreezeMock<IRepositorioBase<Apolice>>();
+            _repositorioMock = FreezeMock<IApoliceRepoitorio>();
             _mapperMock = FreezeMock<IMapper>();
 
             _app = CreateSut();
@@ -28,7 +28,9 @@ namespace Contratacao.Application.Test
         public async Task AdicionarAsync_DeveAdicionarERetornarViewModel()
         {
             var dto = Fixture.Create<ApoliceDTO>();
-            var entity = Fixture.Create<Apolice>();
+
+            var entity = Fixture.Build<Apolice>()
+                        .Without(p => p.Proposta).Create();
 
             _mapperMock
                 .Setup(m => m.Map<Apolice>(dto))
@@ -52,7 +54,8 @@ namespace Contratacao.Application.Test
         public async Task AtualizarAsync_ComId_DeveAtualizar()
         {
             var dto = Fixture.Create<ApoliceDTO>();
-            var entity = Fixture.Create<Apolice>();
+            var entity = Fixture.Build<Apolice>()
+                        .Without(p => p.Proposta).Create();
             var id = Fixture.Create<int>();
 
             _mapperMock.Setup(m => m.Map<Apolice>(dto))
@@ -88,7 +91,9 @@ namespace Contratacao.Application.Test
         [Test]
         public async Task ObterTodosAsync_DeveRetornarLista()
         {
-            var entities = Fixture.CreateMany<Apolice>(3).ToList();
+            var entities = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .CreateMany<Apolice>(3).ToList();
             var dto = Fixture.CreateMany<ApoliceDTO>(3).ToList();
 
             _repositorioMock.Setup(r => r.ObterTodosAsync())
@@ -107,7 +112,9 @@ namespace Contratacao.Application.Test
         public async Task ObterPorIdAsync_DeveRetornarLista()
         {
             var dto = Fixture.Create<ApoliceDTO>();
-            var entity = Fixture.Create<Apolice>();
+            var entity = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create<Apolice>();
 
             _repositorioMock.Setup(r => r.ObterPorIdAssyn(entity.Id))
                             .ReturnsAsync(entity);

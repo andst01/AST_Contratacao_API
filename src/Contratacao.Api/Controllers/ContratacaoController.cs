@@ -38,6 +38,17 @@ namespace Contratacao.Api.Controllers
             return Ok(await _application.ObterTodosAsync());
         }
 
+        [HttpGet]
+        [Route("ObterDadosContratacaoCliente")]
+        [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObterDadosContratacaoCliente()
+        {
+            _logger.LogInformation("Obtendo todas as contratacoes cliente e proposta");
+            return Ok(await _application.ObterDadosContratacaoClienteAsync());
+        }
+
         [HttpPost]
         [Route("Novo")]
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]

@@ -44,7 +44,9 @@ namespace Contratacao.Infra.CrossCuting.Test
         {
             // Arrange
             var now = DateTime.UtcNow;
-            var entidade = Fixture.Create<Apolice>();
+            var entidade = Fixture.Build<Apolice>()
+                                    .Without(p => p.Proposta)
+                                    .Create();
 
 
             // Act
