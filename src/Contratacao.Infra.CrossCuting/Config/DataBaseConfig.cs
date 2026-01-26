@@ -20,6 +20,8 @@ namespace Contratacao.Infra.CrossCuting.Config
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnectionString");
                 options.UseSqlServer(connectionString);
+
+                Console.WriteLine("🔥 Connection ativa: " + connectionString);
             });
 
         }

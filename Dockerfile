@@ -25,7 +25,6 @@ WORKDIR /app
 # Variáveis de ambiente para Development
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV DOTNET_RUNNING_IN_CONTAINER=true
-ENV DOTNET_USE_POLLING_FILE_WATCHER=1
 ENV ASPNETCORE_URLS=http://+:4091
 
 # Copia os binários
