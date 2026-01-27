@@ -1,11 +1,6 @@
 ﻿using AutoMapper;
 using Contratacao.Application.Interfaces;
 using Contratacao.Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Contratacao.Application
 {
@@ -30,7 +25,9 @@ namespace Contratacao.Application
 
             var retorno = await _repositorio.AdicionarAsync(entity);
 
-            return _mapper.Map<TDto>(entity);
+            await _repositorio.SaveChangesAsync();
+
+            return _mapper.Map<TDto>(retorno);
         }
 
       
@@ -41,12 +38,16 @@ namespace Contratacao.Application
 
             var retorno = await _repositorio.AtualizarAsync(entity, id);
 
+            await _repositorio.SaveChangesAsync();
+
             return _mapper.Map<TDto>(retorno);
         }
 
         public async Task<int> ExcluirAsync(int id)
         {
-            return await _repositorio.ExcluirAsync(id);
+            await _repositorio.ExcluirAsync(id);
+
+            return await _repositorio.SaveChangesAsync();
         }
 
 

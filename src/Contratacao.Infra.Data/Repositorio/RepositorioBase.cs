@@ -17,7 +17,6 @@ namespace Contratacao.Infra.Data.Repositorio
         public async Task<T> AdicionarAsync(T entity)
         {
             var retorno = await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
             return retorno.Entity;
         }
 
@@ -25,35 +24,29 @@ namespace Contratacao.Infra.Data.Repositorio
         public async Task<T> AtualizarAsync(T entity, object id)
         {
 
-            var trackedEntity = _context.ChangeTracker
-                               .Entries<T>()
-                               .FirstOrDefault(e => e.Entity.Equals(entity));
+            var set = _context.Set<T>();
 
-            if (trackedEntity != null)
-            {
-               
-                await _context.SaveChangesAsync();
-                return trackedEntity.Entity;
-            }
+            var existingEntity = await set.FindAsync(id);
 
-            var existingEntity = _context.Set<T>().Find(id);
+            if (existingEntity == null)
+                throw new Exception("A entidade não foi encontrada");
 
-            if (existingEntity == null) throw new Exception("A entidade não foi encontrada");
-
+            // Copia os valores para a entidade rastreada
             _context.Entry(existingEntity).CurrentValues.SetValues(entity);
 
-            await _context.SaveChangesAsync();
+            // Garante que o estado é Modified
+            _context.Entry(existingEntity).State = EntityState.Modified;
 
-            var retorno = _context.Set<T>().Find(id);
-
-            return retorno;
+            return existingEntity;
         }
 
-        public async Task<int> ExcluirAsync(int id)
+        public async Task ExcluirAsync(int id)
         {
             var entity = await _context.Set<T>().FindAsync(id);
             _context.Set<T>().Remove(entity);
-            return await _context.SaveChangesAsync();
+
+            _context.Entry(entity).State = EntityState.Deleted;
+
         }
 
         public async Task<IEnumerable<T>> ObterPorFiltroAsync(Expression<Func<T, bool>> filter = null,
@@ -82,6 +75,15 @@ namespace Contratacao.Infra.Data.Repositorio
         public async Task<List<T>> ObterTodosAsync()
         {
             return await _context.Set<T>().ToListAsync();
+        }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+        public void Dispose()
+        {
+            _context.Dispose();
         }
     }
 }

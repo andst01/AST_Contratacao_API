@@ -46,6 +46,9 @@ namespace Contratacao.Application.Test
                 .Setup(m => m.Map<ApoliceDTO>(entity))
                 .Returns(dto);
 
+            _repositorioMock.Setup(r => r.SaveChangesAsync())
+               .ReturnsAsync(1);
+
             var result = await _app.AdicionarAsync(dto);
 
             Assert.NotNull(result);
@@ -69,6 +72,9 @@ namespace Contratacao.Application.Test
             _mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))
                        .Returns(dto);
 
+            _repositorioMock.Setup(r => r.SaveChangesAsync())
+               .ReturnsAsync(1);
+
             var result = await _app.AtualizarAsync(dto, id);
 
             Assert.NotNull(result);
@@ -82,6 +88,9 @@ namespace Contratacao.Application.Test
 
             _repositorioMock
                 .Setup(r => r.ExcluirAsync(id))
+                .Returns(Task.CompletedTask);
+
+            _repositorioMock.Setup(r => r.SaveChangesAsync())
                 .ReturnsAsync(1);
 
             var result = await _app.ExcluirAsync(id);
