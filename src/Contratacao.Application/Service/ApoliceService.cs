@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Request;
 using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Enums;
 using Contratacao.Domain.Interfaces;
@@ -23,7 +24,7 @@ namespace Contratacao.Application.Service
             _mapper = mapper;
         }
 
-        public async Task<ApoliceDTO> CriarApoliceAsync(ApoliceDTO request)
+        public async Task<ApoliceDTO> CriarApoliceAsync(ApoliceRequest request)
         {
             var apolice = _mapper.Map<Apolice>(request);
             var proposta = await _propostaRepositorio.ObterPorIdAsync(apolice.IdProposta);

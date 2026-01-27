@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Contratacao.Application.DTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +7,20 @@ using System.Threading.Tasks;
 
 namespace Contratacao.Application.Interfaces
 {
-    public interface IAppBase<TEntity, TViewModel>
+    public interface IAppBase<TEntity, TRequest, TDto>
       where TEntity : class
-      where TViewModel : class
+      where TRequest : class
+      where TDto : BaseDTO
     {
-        Task<TViewModel> AdicionarAsync(TViewModel entity);
+        Task<TDto> AdicionarAsync(TRequest entity);
 
-        Task<TViewModel> AtualizarAsync(TViewModel entity, object id);
+        Task<TDto> AtualizarAsync(TRequest entity, object id);
 
-        Task<int> ExcluirAsync(int id);
+        Task<BaseDTO> ExcluirAsync(int id);
 
-        Task<List<TViewModel>> ObterTodosAsync();
+        Task<List<TDto>> ObterTodosAsync();
 
-        Task<TViewModel> ObterPorIdAssyn(int id);
+        Task<TDto> ObterPorIdAssyn(int id);
 
 
     }

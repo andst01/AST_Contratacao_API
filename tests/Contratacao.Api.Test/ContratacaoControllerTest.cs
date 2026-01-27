@@ -4,6 +4,7 @@ using Contratacao.Api.Controllers;
 using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Request;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -105,10 +106,11 @@ namespace Contratacao.Api.Test
         public async Task New_DeveAdicionarPropostaERetornarOk()
         {
             // Arrange
-            var request = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
+            var request = Fixture.Create<ApoliceRequest>();
+            var response = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
 
             _mockService.Setup(x => x.CriarApoliceAsync(request))
-                        .ReturnsAsync(request);
+                        .ReturnsAsync(response);
            
 
             // Act
@@ -119,17 +121,18 @@ namespace Contratacao.Api.Test
 
             var okResult = result as OkObjectResult;
             Assert.NotNull(okResult);
-            Assert.AreEqual(request, okResult.Value);
+            Assert.AreEqual(response, okResult.Value);
         }
 
         [Test]
         public async Task Update_DeveAtualizarERetornarOk()
         {
             // Arrange
-            var request = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
+            var request = Fixture.Create<ApoliceRequest>();
+            var response = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
 
             _mockApp.Setup(a => a.AtualizarAsync(request, request.Id))
-                    .ReturnsAsync(request);
+                    .ReturnsAsync(response);
 
             // Act
             var result = await _controller.Atualizar(request);
@@ -139,20 +142,20 @@ namespace Contratacao.Api.Test
 
             var okResult = result as OkObjectResult;
             Assert.NotNull(okResult);
-            Assert.AreEqual(request, okResult.Value);
+            Assert.AreEqual(response, okResult.Value);
         }
 
         [Test]
         public async Task Excluir_DeveExcluirERetornarOk()
         {
             // Arrange
-            var request = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
+            var response = new ApoliceDTO { Id = 1, NumeroApolice = "PROP-001" };
 
-            _mockApp.Setup(a => a.ExcluirAsync(request.Id))
-                    .ReturnsAsync(0);
+            _mockApp.Setup(a => a.ExcluirAsync(10))
+                    .ReturnsAsync(response);
 
             // Act
-            var result = await _controller.Excluir(request.Id);
+            var result = await _controller.Excluir(response.Id);
 
             // Assert
             Assert.IsInstanceOf<OkObjectResult>(result);

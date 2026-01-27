@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Contratacao.Application.DTO
+namespace Contratacao.Application.Request
 {
-    public class ApoliceDTO : BaseDTO
+    public class ApoliceRequest
     {
         public int Id { get; set; }
         public string NumeroApolice { get; set; }
         public int IdProposta { get; set; }
-       
+
         public DateTime DataInicioVigencia { get; set; }
         public DateTime? DataFimVigencia { get; set; }
         public decimal? PremioFinal { get; set; }

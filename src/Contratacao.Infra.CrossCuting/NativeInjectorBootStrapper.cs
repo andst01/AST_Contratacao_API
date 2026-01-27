@@ -31,7 +31,7 @@ namespace Contratacao.Infra.CrossCuting
 
             #region Aplicacao
 
-            services.AddScoped(typeof(IAppBase<,>), typeof(AppBase<,>));
+            services.AddScoped(typeof(IAppBase<,,>), typeof(AppBase<,,>));
             services.AddScoped<IApoliceApp, ApoliceApp>();
             services.AddScoped<IApoliceService, ApoliceService>();
            

@@ -1,6 +1,7 @@
 ﻿using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Request;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Contratacao.Api.Controllers
@@ -58,7 +59,7 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Novo([FromBody] ApoliceDTO request)
+        public async Task<IActionResult> Novo([FromBody] ApoliceRequest request)
         {
             _logger.LogInformation("Adicionando nova contratação");
             return Ok(await _service.CriarApoliceAsync(request));
@@ -69,7 +70,7 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Atualizar([FromBody] ApoliceDTO request)
+        public async Task<IActionResult> Atualizar([FromBody] ApoliceRequest request)
         {
             _logger.LogInformation("Atualizando contratação com ID: {Id} ", request.Id);
             return Ok(await _application.AtualizarAsync(request, request.Id));

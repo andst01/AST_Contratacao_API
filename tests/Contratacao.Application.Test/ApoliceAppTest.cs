@@ -2,6 +2,7 @@
 using AutoMapper;
 using Bogus;
 using Contratacao.Application.DTO;
+using Contratacao.Application.Request;
 using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Enums;
 using Contratacao.Domain.Interfaces;
@@ -29,13 +30,14 @@ namespace Contratacao.Application.Test
         [Test]
         public async Task AdicionarAsync_DeveAdicionarERetornarViewModel()
         {
+            var request = Fixture.Create<ApoliceRequest>();
             var dto = Fixture.Create<ApoliceDTO>();
 
             var entity = Fixture.Build<Apolice>()
                         .Without(p => p.Proposta).Create();
 
             _mapperMock
-                .Setup(m => m.Map<Apolice>(dto))
+                .Setup(m => m.Map<Apolice>(request))
                 .Returns(entity);
 
             _repositorioMock
@@ -49,7 +51,7 @@ namespace Contratacao.Application.Test
             _repositorioMock.Setup(r => r.SaveChangesAsync())
                .ReturnsAsync(1);
 
-            var result = await _app.AdicionarAsync(dto);
+            var result = await _app.AdicionarAsync(request);
 
             Assert.NotNull(result);
             _repositorioMock.Verify(r => r.AdicionarAsync(entity), Times.Once);
@@ -58,12 +60,13 @@ namespace Contratacao.Application.Test
         [Test]
         public async Task AtualizarAsync_ComId_DeveAtualizar()
         {
+            var request = Fixture.Create<ApoliceRequest>();
             var dto = Fixture.Create<ApoliceDTO>();
             var entity = Fixture.Build<Apolice>()
                         .Without(p => p.Proposta).Create();
             var id = Fixture.Create<int>();
 
-            _mapperMock.Setup(m => m.Map<Apolice>(dto))
+            _mapperMock.Setup(m => m.Map<Apolice>(request))
                        .Returns(entity);
 
             _repositorioMock.Setup(r => r.AtualizarAsync(entity, id))
@@ -75,7 +78,7 @@ namespace Contratacao.Application.Test
             _repositorioMock.Setup(r => r.SaveChangesAsync())
                .ReturnsAsync(1);
 
-            var result = await _app.AtualizarAsync(dto, id);
+            var result = await _app.AtualizarAsync(request, id);
 
             Assert.NotNull(result);
             _repositorioMock.Verify(r => r.AtualizarAsync(entity, id), Times.Once);
@@ -95,7 +98,7 @@ namespace Contratacao.Application.Test
 
             var result = await _app.ExcluirAsync(id);
 
-            Assert.AreEqual(1, result);
+            Assert.AreEqual(true, result.Mensagem.Sucesso);
             _repositorioMock.Verify(r => r.ExcluirAsync(id), Times.Once);
         }
 

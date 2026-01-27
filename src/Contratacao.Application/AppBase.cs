@@ -1,12 +1,15 @@
 ﻿using AutoMapper;
+using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Domain.Interfaces;
 
 namespace Contratacao.Application
 {
-    public class AppBase<TEntity, TDto> : IAppBase<TEntity, TDto>
+    public class AppBase<TEntity, TRequest, TDto> 
+        : IAppBase<TEntity, TRequest, TDto>
        where TEntity : class
-       where TDto : class
+       where TRequest : class
+       where TDto : BaseDTO
     {
 
         protected readonly IRepositorioBase<TEntity> _repositorio;
@@ -18,36 +21,63 @@ namespace Contratacao.Application
             _repositorio = repositorio;
             _mapper = mapper;
         }
-        public async Task<TDto> AdicionarAsync(TDto viewModel)
+        public async Task<TDto> AdicionarAsync(TRequest request)
         {
 
-            var entity = _mapper.Map<TEntity>(viewModel);
+            var entity = _mapper.Map<TEntity>(request);
 
-            var retorno = await _repositorio.AdicionarAsync(entity);
+            var resultado = await _repositorio.AdicionarAsync(entity);
 
             await _repositorio.SaveChangesAsync();
 
-            return _mapper.Map<TDto>(retorno);
+            var retorno = _mapper.Map<TDto>(resultado);
+
+            retorno.Mensagem = new();
+            retorno.Mensagem.Sucesso = true;
+            retorno.Mensagem.Descricao = "Registro adicionado com sucesso.";
+
+            return retorno;
         }
 
       
 
-        public async Task<TDto> AtualizarAsync(TDto viewModel, object id)
+        public async Task<TDto> AtualizarAsync(TRequest request, object id)
         {
-            var entity = _mapper.Map<TEntity>(viewModel);
+            var entity = _mapper.Map<TEntity>(request);
 
-            var retorno = await _repositorio.AtualizarAsync(entity, id);
+            var resultado = await _repositorio.AtualizarAsync(entity, id);
 
             await _repositorio.SaveChangesAsync();
 
-            return _mapper.Map<TDto>(retorno);
+            var retorno = _mapper.Map<TDto>(resultado);
+
+            retorno.Mensagem = new();
+            retorno.Mensagem.Sucesso = true;
+            retorno.Mensagem.Descricao = "Registro atualizado com sucesso.";
+
+            return retorno;
         }
 
-        public async Task<int> ExcluirAsync(int id)
+        public async Task<BaseDTO> ExcluirAsync(int id)
         {
+            var retono = new BaseDTO();
             await _repositorio.ExcluirAsync(id);
 
-            return await _repositorio.SaveChangesAsync();
+            var resultado = await _repositorio.SaveChangesAsync();
+            if (resultado > 0)
+            {
+                retono.Mensagem = new();
+                retono.Mensagem.Sucesso = true;
+                retono.Mensagem.Descricao = "Registro excluído com sucesso.";
+            }
+            else
+            {
+                retono.Mensagem = new();
+                retono.Mensagem.Sucesso = false;
+                retono.Mensagem.Descricao = "Não foi possível excluir o registro.";
+            }
+
+            return retono;
         }
 
 

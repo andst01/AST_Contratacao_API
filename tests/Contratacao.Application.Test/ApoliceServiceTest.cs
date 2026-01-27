@@ -3,6 +3,7 @@ using AutoFixture.AutoMoq;
 using AutoMapper;
 using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Request;
 using Contratacao.Application.Service;
 using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Enums;
@@ -36,6 +37,8 @@ namespace Contratacao.Application.Test
         [Test]
         public async Task Nao_Deve_Criar_Apolice_Com_Proposta_Nao_Aprovada()
         {
+            var request = Fixture.Create<ApoliceRequest>();
+
             var proposta = new Proposta();
             proposta.Status = EnumStatusProposta.EmAnalise;
 
@@ -44,7 +47,7 @@ namespace Contratacao.Application.Test
                 .Create();
 
             _mockMapper
-                .Setup(m => m.Map<Apolice>(It.IsAny<ApoliceDTO>()))
+                .Setup(m => m.Map<Apolice>(request))
                 .Returns(apolice);
 
             _mockPropostaRepositorio
@@ -52,7 +55,7 @@ namespace Contratacao.Application.Test
                 .ReturnsAsync(proposta);
 
             Assert.ThrowsAsync<Exception>(() =>
-                _service.CriarApoliceAsync(new ApoliceDTO { IdProposta = 1 })
+                _service.CriarApoliceAsync(request)
             );
         }
 
@@ -63,6 +66,8 @@ namespace Contratacao.Application.Test
                 .Without(x => x.Apolice)
                 .Without(x => x.Cliente)
                 .Create();
+
+            var request = Fixture.Create<ApoliceRequest>();
 
             proposta.Id = 10;
             proposta.Status = EnumStatusProposta.Aprovada;
@@ -75,7 +80,7 @@ namespace Contratacao.Application.Test
             apolice.Status = EnumStatusApolice.Ativa;
 
             _mockMapper
-                .Setup(m => m.Map<Apolice>(It.IsAny<ApoliceDTO>()))
+                .Setup(m => m.Map<Apolice>(request))
                 .Returns(apolice);
 
             _mockPropostaRepositorio
@@ -98,7 +103,7 @@ namespace Contratacao.Application.Test
             _mockApoliceRepoitorio.Setup(r => r.SaveChangesAsync())
                 .ReturnsAsync(1);
 
-            var retorno = await _service.CriarApoliceAsync(apoliceDTO);
+            var retorno = await _service.CriarApoliceAsync(request);
            
             Assert.NotNull(retorno);
            

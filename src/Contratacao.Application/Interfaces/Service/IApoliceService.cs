@@ -1,4 +1,5 @@
 ﻿using Contratacao.Application.DTO;
+using Contratacao.Application.Request;
 using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Interfaces;
 using System;
@@ -12,6 +13,6 @@ namespace Contratacao.Application.Interfaces.Service
     
     public interface IApoliceService
     {
-        Task<ApoliceDTO> CriarApoliceAsync(ApoliceDTO apolice);
+        Task<ApoliceDTO> CriarApoliceAsync(ApoliceRequest apolice);
     }
 }
