@@ -38,7 +38,9 @@ namespace Contratacao.Application.Service
             }
 
             var resultado = await _apoliceRepoitorio.AdicionarAsync(apolice);
-           
+            
+            await _apoliceRepoitorio.SaveChangesAsync();
+
             var retorno = _mapper.Map<ApoliceDTO>(resultado);
             
             return retorno;

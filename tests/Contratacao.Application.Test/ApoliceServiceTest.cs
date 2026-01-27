@@ -83,6 +83,7 @@ namespace Contratacao.Application.Test
                 .ReturnsAsync(proposta);
 
 
+
             var apoliceDTO = Fixture.Create<ApoliceDTO>();
             apoliceDTO.IdProposta = 10;
             apoliceDTO.CodigoStatus = (int)EnumStatusApolice.Ativa;
@@ -93,6 +94,9 @@ namespace Contratacao.Application.Test
             _mockApoliceRepoitorio
                 .Setup(r => r.AdicionarAsync(It.IsAny<Apolice>()))
                 .ReturnsAsync(apolice);
+
+            _mockApoliceRepoitorio.Setup(r => r.SaveChangesAsync())
+                .ReturnsAsync(1);
 
             var retorno = await _service.CriarApoliceAsync(apoliceDTO);
            
