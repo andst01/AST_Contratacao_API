@@ -26,24 +26,34 @@ namespace Contratacao.Application.Service
 
         public async Task<ApoliceDTO> CriarApoliceAsync(ApoliceRequest request)
         {
+            var retorno = new ApoliceDTO();
+            retorno.Mensagem = new();
             var apolice = _mapper.Map<Apolice>(request);
             var proposta = await _propostaRepositorio.ObterPorIdAsync(apolice.IdProposta);
            
             if (proposta == null)
             {
-                throw new Exception("Proposta não encontrada.");
+                retorno.Mensagem.Sucesso = false;
+                retorno.Mensagem.Descricao = "Proposta não encontrada.";
+                return retorno;
             }
             else if (proposta.Status != EnumStatusProposta.Aprovada)
             {
-                throw new Exception("A proposta deve estar aprovada para criar uma apólice.");
+                retorno.Mensagem.Sucesso = false;
+                retorno.Mensagem.Descricao = "A proposta deve estar aprovada para criar uma apólice";
+                return retorno;
+
             }
 
             var resultado = await _apoliceRepoitorio.AdicionarAsync(apolice);
             
             await _apoliceRepoitorio.SaveChangesAsync();
 
-            var retorno = _mapper.Map<ApoliceDTO>(resultado);
-            
+            retorno = _mapper.Map<ApoliceDTO>(resultado);
+            retorno.Mensagem = new();
+            retorno.Mensagem.Sucesso = true;
+            retorno.Mensagem.Descricao = "Apólice criada com sucesso.";
+
             return retorno;
         }
     }

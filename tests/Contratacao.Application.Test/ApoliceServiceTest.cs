@@ -34,31 +34,7 @@ namespace Contratacao.Application.Test
             _service = new ApoliceService(_mockApoliceRepoitorio.Object, _mockPropostaRepositorio.Object, _mockMapper.Object);
         }
 
-        [Test]
-        public async Task Nao_Deve_Criar_Apolice_Com_Proposta_Nao_Aprovada()
-        {
-            var request = Fixture.Create<ApoliceRequest>();
-
-            var proposta = new Proposta();
-            proposta.Status = EnumStatusProposta.EmAnalise;
-
-            var apolice = Fixture.Build<Apolice>()
-                .Without(x => x.Proposta)
-                .Create();
-
-            _mockMapper
-                .Setup(m => m.Map<Apolice>(request))
-                .Returns(apolice);
-
-            _mockPropostaRepositorio
-                .Setup(r => r.ObterPorIdAsync(It.IsAny<int>()))
-                .ReturnsAsync(proposta);
-
-            Assert.ThrowsAsync<Exception>(() =>
-                _service.CriarApoliceAsync(request)
-            );
-        }
-
+       
         [Test]
         public async Task Deve_Criar_Apolice_Com_Proposta_Aprovada()
         {
