@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Contratacao.Api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class ContratacaoController : ControllerBase
     {
         private readonly IApoliceApp _application;
