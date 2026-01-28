@@ -23,10 +23,5 @@ namespace Contratacao.Application.Request
 
         public int CodigoStatus { get; set; }
 
-        public EnumStatusProposta? StatusProposta { get; set; }
-        public string Status { get; set; }
-        public string NumeroProposta { get; set; }
-
-        public string NomeCliente { get; set; }
     }
 }
