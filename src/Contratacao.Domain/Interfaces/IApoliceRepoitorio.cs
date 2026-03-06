@@ -9,6 +9,10 @@ namespace Contratacao.Domain.Interfaces
 {
     public interface IApoliceRepoitorio : IRepositorioBase<Apolice>
     {
-        Task<List<Apolice>> ObterDadosContratacaoClienteAsync();
+        Task<List<Apolice>> ObterContratacaoPropostaClienteAsync();
+
+        Task<Apolice> ObterContratacaoPropostaClientePorIdAsync(int id);
+
+        Task<List<Apolice>> ObterTodosComFiltroAsync(DateTime? dataContratacao, string? numeroApolice, int status);
     }
 }

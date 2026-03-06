@@ -149,13 +149,13 @@ namespace Contratacao.Application.Test
 
             var dto = Fixture.CreateMany<ApoliceDTO>(3).ToList();
 
-            _repositorioMock.Setup(r => r.ObterDadosContratacaoClienteAsync())
+            _repositorioMock.Setup(r => r.ObterContratacaoPropostaClienteAsync())
                             .ReturnsAsync(entities);
 
             _mapperMock.Setup(m => m.Map<List<ApoliceDTO>>(entities))
                        .Returns(dto);
 
-            var result = await _app.ObterDadosContratacaoClienteAsync();
+            var result = await _app.ObterContratacaoPropostaClienteAsync();
 
             Assert.AreEqual(3, result.Count);
         }

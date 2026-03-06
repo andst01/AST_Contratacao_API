@@ -131,7 +131,7 @@ namespace Contratacao.Infra.Data.Test
             await _repositorio.AdicionarAsync(apolice);
             await _repositorio.SaveChangesAsync();
 
-            var retorno = await _repositorio.ObterDadosContratacaoClienteAsync();
+            var retorno = await _repositorio.ObterContratacaoPropostaClienteAsync();
 
             Assert.AreEqual(1, _context.Set<Apolice>().Count());
         }

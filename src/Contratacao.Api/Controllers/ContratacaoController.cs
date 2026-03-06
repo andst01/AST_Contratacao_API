@@ -35,6 +35,17 @@ namespace Contratacao.Api.Controllers
         }
 
         [HttpGet]
+        [Route("ObterContratacaoPropostaClientePorId/{id}")]
+        [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObterContratacaoPropostaClientePorId(int id)
+        {
+            _logger.LogInformation("Obtendo contratação com ID: {Id} ", id);
+            return Ok(await _application.ObterContratacaoPropostaClientePorIdAsync(id));
+        }
+
+        [HttpGet]
         [Route("ObterTodos")]
         [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
@@ -47,13 +58,24 @@ namespace Contratacao.Api.Controllers
 
         [HttpGet]
         [Route("ObterDadosContratacaoCliente")]
-        [ProducesResponseType(typeof(ApoliceDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(List<ApoliceDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterDadosContratacaoCliente()
         {
             _logger.LogInformation("Obtendo todas as contratações cliente e proposta");
-            return Ok(await _application.ObterDadosContratacaoClienteAsync());
+            return Ok(await _application.ObterContratacaoPropostaClienteAsync());
+        }
+
+        [HttpGet]
+        [Route("ObterTodosComFiltro")]
+        [ProducesResponseType(typeof(List<ApoliceDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ObterTodosComFiltroAsync(DateTime? dataContratacao, string? numeroApolice, int status = -1)
+        {
+            _logger.LogInformation("Obtendo todas as contratações com filto");
+            return Ok(await _application.ObterTodosComFiltroAsync(dataContratacao, numeroApolice, status));
         }
 
         [HttpPost]

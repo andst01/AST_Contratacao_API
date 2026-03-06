@@ -18,6 +18,7 @@ namespace Contratacao.Infra.CrossCuting.AutoMapper
             CreateMap<ApoliceDTO, Apolice>()
                 .ForMember(x => x.Status, opt => opt.MapFrom(src => (EnumStatusApolice)src.CodigoStatus))
                 .ForMember(x => x.Proposta, opt => opt.Ignore());
+                
 
             CreateMap<ApoliceRequest, Apolice>()
                .ForMember(x => x.Status, opt => opt.MapFrom(src => (EnumStatusApolice)src.CodigoStatus))
