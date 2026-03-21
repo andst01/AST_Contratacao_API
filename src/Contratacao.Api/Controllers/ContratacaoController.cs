@@ -2,10 +2,13 @@
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Service;
 using Contratacao.Application.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Contratacao.Api.Controllers
 {
+    [Authorize(Roles = "Colaborador")]
     [ApiController]
     [Route("api/[controller]")]
     public class ContratacaoController : ControllerBase
@@ -52,6 +55,9 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterTodos()
         {
+            //var us = User.Identity.Name;
+            //var isRole = User.IsInRole("Colaborador");
+
             _logger.LogInformation("Obtendo todas as contratações");
             return Ok(await _application.ObterTodosAsync());
         }
