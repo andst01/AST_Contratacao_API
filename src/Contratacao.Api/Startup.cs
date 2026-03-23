@@ -30,48 +30,12 @@ namespace Contratacao.Api
 
             services.AddControllers().AddNewtonsoftJson();
 
-            //services.AddAuthentication("Bearer")
-            //        .AddJwtBearer("Bearer", options =>
-            //        {
-            //            // URL do IdentityServer
-            //            options.Authority = "https://localhost:5001";
-
-            //            // 🔥 AUDIENCE (ESSENCIAL para essa abordagem)
-            //            //options.Audience = "api1";
-
-            //            // Para desenvolvimento (evita erro de HTTPS)
-            //            //options.RequireHttpsMetadata = false;
-
-            //            options.TokenValidationParameters = new TokenValidationParameters
-            //            {
-            //                ValidateAudience = false
-            //            };
-
-            //            options.Events = new JwtBearerEvents
-            //            {
-            //                OnAuthenticationFailed = context =>
-            //                {
-            //                    Console.WriteLine("ERRO TOKEN: " + context.Exception.Message);
-            //                    return Task.CompletedTask;
-            //                }
-            //            };
-            //        });
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
              .AddJwtBearer(options =>
              {
                  options.Authority = "https://localhost:5001";
                  options.RequireHttpsMetadata = false;
                  options.SaveToken = true;
-
-                 // 1. Forçamos o Handler Clássico (que já estávamos usando)
-                 var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-
-                 // 🔥 2. DIZEMOS PARA ESTE HANDLER ESPECÍFICO NÃO MAPEAR AS CLAIMS
-                 handler.InboundClaimTypeMap.Clear();
-
-                 options.SecurityTokenValidators.Clear();
-                 options.SecurityTokenValidators.Add(handler);
 
                  options.TokenValidationParameters = new TokenValidationParameters
                  {
@@ -82,11 +46,7 @@ namespace Contratacao.Api
                      RoleClaimType = "role",
                      NameClaimType = "name"
                      
-                     // Isso aqui força o middleware a usar o token bruto sem tentar "limpar" a string antes
-                     //SignatureValidator = delegate (string token, TokenValidationParameters parameters)
-                     //{
-                     //    return new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(token);
-                     //}
+                     
                  };
 
                  options.Events = new JwtBearerEvents
@@ -133,18 +93,7 @@ namespace Contratacao.Api
 
             app.UseCors("AllowAll");
 
-            app.Use(async (context, next) =>
-            {
-                var authHeader = context.Request.Headers["Authorization"].ToString();
-                if (!string.IsNullOrEmpty(authHeader))
-                {
-                    Console.WriteLine("------ DEBUG DE HEADER ------");
-                    Console.WriteLine($"Valor Real: '{authHeader}'");
-                    Console.WriteLine($"Tamanho: {authHeader.Length}");
-                    Console.WriteLine("-----------------------------");
-                }
-                await next();
-            });
+           
 
             app.UseAuthentication();
             app.UseAuthorization();
