@@ -11,6 +11,13 @@ namespace Contratacao.Application.Map
 {
     public class ApoliceEntityToDTO : IMapBase<ApoliceDTO, Apolice>
     {
+        private readonly IMapBase<PropostaDTO, Proposta> _mapPropostaEntityToDTo;
+
+        public ApoliceEntityToDTO(IMapBase<PropostaDTO,Proposta> mapPropostaEntityToDTo)
+        {
+            _mapPropostaEntityToDTo = mapPropostaEntityToDTo;
+        }
+
         public ApoliceDTO Map(Apolice source)
         {
             if (source == null)
@@ -28,7 +35,10 @@ namespace Contratacao.Application.Map
                 FormaPagamento = source.FormaPagamento,
                 QuantidadeParcelas = source.QuantidadeParcelas,
                 DataContratacao = source.DataContratacao,
-                CodigoStatus = (int)source.Status
+                CodigoStatus = (int)source.Status,
+                Proposta = source.Proposta == null 
+                            ? null 
+                            : _mapPropostaEntityToDTo.Map(source.Proposta),
             };
 
             return apoliceDTO;

@@ -28,5 +28,7 @@ namespace Contratacao.Application.DTO
         public string NumeroProposta { get; set; }
 
         public string NomeCliente { get; set; }
+
+        public PropostaDTO Proposta { get; set; }
     }
 }

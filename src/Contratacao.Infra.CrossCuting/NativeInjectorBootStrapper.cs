@@ -40,8 +40,12 @@ namespace Contratacao.Infra.CrossCuting
             services.AddScoped<IApoliceApp, ApoliceApp>();
             services.AddScoped<IApoliceService, ApoliceService>();
 
+           
             services.AddScoped<IMapBase<Apolice, ApoliceRequest>, ApoliceRequestToEntity>();
             services.AddScoped<IMapBase<ApoliceDTO, Apolice>, ApoliceEntityToDTO>();
+            services.AddScoped<IMapBase<PropostaDTO, Proposta>, PropostaEntityToDTO>();
+            services.AddScoped<IMapBase<ClienteDTO, Cliente>, ClienteEntityToDTO>();
+
 
             #endregion
 
