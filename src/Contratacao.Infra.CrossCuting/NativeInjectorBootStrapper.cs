@@ -1,7 +1,12 @@
 ﻿using Contratacao.Application;
+using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
+using Contratacao.Application.Interfaces.Map;
 using Contratacao.Application.Interfaces.Service;
+using Contratacao.Application.Map;
+using Contratacao.Application.Request;
 using Contratacao.Application.Service;
+using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Interfaces;
 using Contratacao.Infra.Data.Contexto;
 using Contratacao.Infra.Data.Repositorio;
@@ -34,7 +39,10 @@ namespace Contratacao.Infra.CrossCuting
             services.AddScoped(typeof(IAppBase<,,>), typeof(AppBase<,,>));
             services.AddScoped<IApoliceApp, ApoliceApp>();
             services.AddScoped<IApoliceService, ApoliceService>();
-           
+
+            services.AddScoped<IMapBase<Apolice, ApoliceRequest>, ApoliceRequestToEntity>();
+            services.AddScoped<IMapBase<ApoliceDTO, Apolice>, ApoliceEntityToDTO>();
+
             #endregion
 
             services.AddScoped<ContratacaoDbContext>();
