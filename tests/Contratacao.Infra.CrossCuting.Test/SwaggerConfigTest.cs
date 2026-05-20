@@ -1,37 +1,69 @@
 ﻿using Contratacao.Infra.CrossCuting.Config;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using Moq;
 using NUnit.Framework;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Contratacao.Infra.CrossCuting.Test
 {
     [TestFixture]
     public class SwaggerConfigTest
     {
-        private IServiceCollection _services;
+        private ServiceCollection _services;
+        private Mock<IConfiguration> _configurationMock;
 
         [SetUp]
         public void Setup()
         {
             _services = new ServiceCollection();
+            _configurationMock = new Mock<IConfiguration>();
+
+            // O SwaggerGen depende de serviços de Logging e de MVC/Routing para funcionar
+            _services.AddLogging();
+            _services.AddMvcCore();
         }
 
         [Test]
-        public void AddSwaggerConfig_ServicesNull_DeveLancarArgumentNullException()
-        {
-            var ex = Assert.Throws<ArgumentNullException>(() =>
-                SwaggerConfig.AddSwaggerConfig(null));
-
-            Assert.AreEqual("services", ex.ParamName);
-        }
-
-        [Test]
-        public void AddSwaggerConfig_DeveRegistrarServicos()
+        public void AddSwaggerConfiguration_ShouldRegisterSwaggerServices()
         {
             // Act
-            Assert.DoesNotThrow(() => SwaggerConfig.AddSwaggerConfig(_services));
+            _services.AddSwaggerConfig() ;
+            var serviceProvider = _services.BuildServiceProvider();
 
             // Assert
-            Assert.IsTrue(_services.Count > 0, "O container deve ter pelo menos um serviço registrado pelo AddSwaggerGen");
+            var swaggerGenOptions = serviceProvider.GetService<IOptions<SwaggerGenOptions>>();
+
+            Assert.That(swaggerGenOptions, Is.Not.Null, "SwaggerGenOptions não foi registrado.");
         }
+
+
+        [Test]
+        public void AddSwaggerConfiguration_ShouldHaveCorrectInfoAndDoc()
+        {
+            // Act
+            _services.AddSwaggerConfig();
+            var serviceProvider = _services.BuildServiceProvider();
+
+            // Obtemos as opções configuradas
+            var options = serviceProvider.GetRequiredService<IOptions<SwaggerGenOptions>>().Value;
+
+            // Verificamos se o "v1" foi criado com os dados corretos
+            Assert.Multiple(() =>
+            {
+                Assert.That(options.SwaggerGeneratorOptions.SwaggerDocs.ContainsKey("v1"), Is.True);
+
+                var info = options.SwaggerGeneratorOptions.SwaggerDocs["v1"];
+                Assert.That(info.Title, Is.EqualTo("Contratacao API"));
+                Assert.That(info.Version, Is.EqualTo("v1"));
+                Assert.That(info.Description, Is.EqualTo("API voltada para a gestão de Contratação"));
+            });
+        }
+
+
+
+
+
     }
 }

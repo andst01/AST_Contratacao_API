@@ -16,12 +16,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Contratacao.Infra.CrossCuting
 {
+    [ExcludeFromCodeCoverage]
     public static class NativeInjectorBootStrapper
     {
         public static void RegisterServices(this IServiceCollection services)

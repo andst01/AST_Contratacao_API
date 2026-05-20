@@ -5,6 +5,7 @@ using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Service;
 using Contratacao.Application.Request;
+using Contratacao.Domain.Entidades;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -58,6 +59,23 @@ namespace Contratacao.Api.Test
         }
 
         [Test]
+        public async Task ObterContratacaoPropostaClientePorId_DeveRetornarOk()
+        {
+            // Arrange
+            var id = 1;
+            var propostaVm = new ApoliceDTO { Id = id, NumeroApolice = "PROP-001" };
+            _mockApp.Setup(a => a.ObterContratacaoPropostaClientePorIdAsync(id))
+                    .ReturnsAsync(propostaVm);
+            // Act
+            var result = await _controller.ObterContratacaoPropostaClientePorId(id);
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+            var okResult = result as OkObjectResult;
+            Assert.NotNull(okResult);
+            Assert.AreEqual(propostaVm, okResult.Value);
+        }
+
+        [Test]
         public async Task ObterTodos_DeveRetornarOkComLista()
         {
             // Arrange
@@ -103,6 +121,42 @@ namespace Contratacao.Api.Test
             var okResult = result as OkObjectResult;
             Assert.NotNull(okResult);
             Assert.AreEqual(lista, okResult.Value);
+        }
+
+
+        [Test]
+        [TestCase(null, null, 1)]
+        [TestCase("2024-01-01", null, 1)]
+        [TestCase(null, "A123", 1)]
+        public async Task ObterTodosComFiltroAsync_Test(DateTime? dataFiltro, string? numeroApolice, int status)
+        {
+            // Arrange
+
+            //var lista = Fixture.Build<ApoliceDTO>()
+                            
+            //                .Without(x => x.Proposta)
+            //                .CreateMany(3)
+            //                .ToList();
+
+            var lista = Fixture.Build<ApoliceDTO>()
+                .With(x => x.CodigoStatus, status)
+               .With(x => x.NumeroApolice, numeroApolice ?? "Teste")
+               .With(x => x.DataContratacao, dataFiltro ?? DateTime.Now)
+                              .Without(p => p.Proposta)
+                              .CreateMany(3).ToList();
+
+            _mockApp.Setup(a => a.ObterTodosComFiltroAsync(dataFiltro, numeroApolice, status))
+                    .ReturnsAsync(lista);
+
+            // Act
+            var result = await _controller.ObterTodosComFiltroAsync(dataFiltro, numeroApolice, status);
+
+            // Assert
+            Assert.IsInstanceOf<OkObjectResult>(result);
+
+            var okResult = result as OkObjectResult;
+            Assert.NotNull(okResult);
+            //Assert.AreEqual(lista, okResult.Value);
         }
 
         [Test]

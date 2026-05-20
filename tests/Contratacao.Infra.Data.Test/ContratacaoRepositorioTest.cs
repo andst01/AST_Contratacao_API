@@ -70,7 +70,7 @@ namespace Contratacao.Infra.Data.Test
 
         }
 
-        
+
 
         [Test]
         public async Task ExcluirAsync_DevePersistir()
@@ -104,7 +104,7 @@ namespace Contratacao.Infra.Data.Test
 
         }
 
-       
+
 
         [Test]
         public async Task ObterTodosdAsync_DevePersistir()
@@ -162,6 +162,132 @@ namespace Contratacao.Infra.Data.Test
             Assert.AreEqual("A123", result.First().NumeroApolice);
         }
 
+        [Test]
+        public async Task ObterPorFiltroAsync_FiltraPorDataCriacao()
+        {
+            var apolice1 = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
+            apolice1.DataContratacao = new DateTime(2024, 1, 1);
+            var apolice2 = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
+            apolice2.DataContratacao = new DateTime(2024, 6, 1);
+            await _context.Set<Apolice>().AddRangeAsync(apolice1, apolice2);
+            await _context.SaveChangesAsync();
+            // Act - filtra por DataContratacao
+            var result = await _repositorio.ObterPorFiltroAsync(p => p.DataContratacao >= new DateTime(2024, 5, 1));
+            // Assert
+            Assert.AreEqual(1, result.Count());
+            Assert.AreEqual(new DateTime(2024, 6, 1), result.First().DataContratacao);
+
+
+        }
+
+        [Test]
+        public async Task ObterContratacaoPropostaClientePorIdAsync_Test()
+        {
+            var apolice = Fixture.Build<Apolice>()
+                                .Without(p => p.Proposta)
+                                .Create();
+            var proposta = Fixture.Build<Proposta>()
+                                .Without(p => p.Cliente)
+                                .Without(p => p.Apolice)
+                                .Create();
+            var cliente = Fixture.Build<Cliente>()
+                                .Without(c => c.Propostas)
+                                .Create();
+
+            proposta.Cliente = cliente;
+            apolice.Proposta = proposta;
+
+            await _context.Set<Cliente>().AddAsync(cliente);
+            await _context.Set<Proposta>().AddAsync(proposta);
+            await _context.Set<Apolice>().AddAsync(apolice);
+
+            await _context.SaveChangesAsync();
+
+            await _context.Set<Apolice>()
+                                  .Include(a => a.Proposta)
+                                  .ThenInclude(p => p.Cliente)
+                                  .Where(x => x.Id == apolice.Id)
+                                  .FirstOrDefaultAsync();
+            // Act
+            var result = await _repositorio.ObterContratacaoPropostaClientePorIdAsync(apolice.Id);
+            // Assert
+            Assert.NotNull(result);
+            Assert.AreEqual(apolice.Id, result.Id);
+        }
+
+        [Test]
+        [TestCase(null, null, 1)]
+        [TestCase("2024-01-01", null, 1)]
+        [TestCase(null, "A123", 1)]
+        public async Task ObterTodosComFiltroAsync_Test(DateTime? dataFiltro, string? numeroApolice, int status)
+        {
+            var apolices = Fixture.Build<Apolice>()
+                .With(x => x.NumeroApolice, numeroApolice ?? "Teste")
+                .With(x => x.DataContratacao, dataFiltro ?? DateTime.Now)
+                               .Without(p => p.Proposta)
+                               .CreateMany(3).ToList();
+            var propostas = Fixture.Build<Proposta>()
+                                .Without(p => p.Cliente)
+                                .Without(p => p.Apolice)
+                                .CreateMany(3).ToList();
+            var clientes = Fixture.Build<Cliente>()
+                                .Without(c => c.Propostas)
+                                .CreateMany(3).ToList();
+
+            propostas = clientes.Select((cliente, index) =>
+            {
+                var proposta = propostas[index];
+                proposta.Cliente = cliente;
+                return proposta;
+            }).ToList();
+
+            apolices = propostas.Select((proposta, index) =>
+            {
+                var apolice = apolices[index];
+                apolice.Proposta = proposta;
+                return apolice;
+            }).ToList();
+
+            await _context.Set<Cliente>().AddRangeAsync(clientes);
+            await _context.Set<Proposta>().AddRangeAsync(propostas);
+            await _context.Set<Apolice>().AddRangeAsync(apolices);
+
+            await _context.SaveChangesAsync();
+
+            var result = await _repositorio.ObterTodosComFiltroAsync(dataFiltro, numeroApolice, status);
+            Assert.NotNull(result);
+
+            // Act
+
+        }
+
+
+        //[Test]
+        //public async Task ObterPorFiltroAsync_FiltraPorStatus()
+        //{
+        //    var apolice1 = Fixture.Build<Apolice>()
+        //                        .Without(p => p.Proposta)
+        //                        .Create();
+        //    apolice1.Status = Domain.Enums.EnumStatusApolice.Ativa;
+        //    var apolice2 = Fixture.Build<Apolice>()
+        //                        .Without(p => p.Proposta)
+        //                        .Create();
+        //    apolice2.Status = Domain.Enums.EnumStatusApolice.Cancelada;
+        //    await _context.Set<Apolice>().AddRangeAsync(apolice1, apolice2);
+        //    await _context.SaveChangesAsync();
+        //    // Act - filtra por Status
+        //    var result = await _repositorio.ObterPorFiltroAsync(p => p.Status == Domain.Enums.EnumStatusApolice.Ativa);
+        //    // Assert
+        //    Assert.AreEqual(1, result.Count());
+        //    Assert.AreEqual(Domain.Enums.EnumStatusApolice.Ativa, result.First().Status);
+
+        //}
 
     }
+
+
 }

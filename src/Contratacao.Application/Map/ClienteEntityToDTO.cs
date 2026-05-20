@@ -13,7 +13,7 @@ namespace Contratacao.Application.Map
     {
         public ClienteDTO Map(Cliente source)
         {
-            if(source == null) throw new ArgumentNullException("source");
+            if (source == null) return null;
 
             var clienteDTO = new ClienteDTO
             {

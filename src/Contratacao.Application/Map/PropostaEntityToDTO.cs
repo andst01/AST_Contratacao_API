@@ -20,9 +20,9 @@ namespace Contratacao.Application.Map
         }
         public PropostaDTO Map(Proposta source)
         {
-           if(source == null) throw new ArgumentNullException(nameof(source));
+           if(source == null) return null;
 
-           var propostaDTO = new PropostaDTO
+            var propostaDTO = new PropostaDTO
            {
                Id = source.Id,
                NumeroProposta = source.NumeroProposta,

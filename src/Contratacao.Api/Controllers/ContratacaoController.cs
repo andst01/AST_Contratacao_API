@@ -80,8 +80,8 @@ namespace Contratacao.Api.Controllers
         [ProducesResponseType(typeof(ObjectResult), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ObterTodosComFiltroAsync(DateTime? dataContratacao, string? numeroApolice, int status = -1)
         {
-            var us = User.Identity.Name;
-            var isRole = User.IsInRole("Colaborador");
+            // var us = User.Identity.Name;
+            //var isRole = User.IsInRole("Colaborador");
 
             _logger.LogInformation("Obtendo todas as contratações com filto");
             return Ok(await _application.ObterTodosComFiltroAsync(dataContratacao, numeroApolice, status));
