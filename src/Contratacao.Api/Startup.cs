@@ -24,7 +24,7 @@ namespace Contratacao.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDataBaseConfiguration(Configuration);
-            services.AddAutoMappingConfig();
+           // services.AddAutoMappingConfig();
             services.AddSwaggerConfig();
             services.AddInjecaoDependeciaConfig();
 

@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Contratacao.Application.DTO;
+﻿using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Map;
 using Contratacao.Domain.Interfaces;
@@ -16,15 +15,13 @@ namespace Contratacao.Application
         protected readonly IMapBase<TEntity, TRequest> _mapRequestToEntity;
         protected readonly IMapBase<TDto, TEntity> _mapEntityToDto;
         protected readonly IRepositorioBase<TEntity> _repositorio;
-        protected readonly IMapper _mapper;
+       
 
         public AppBase(IRepositorioBase<TEntity> repositorio,
-                       IMapper mapper,
                        IMapBase<TEntity, TRequest> mapRequestToEntity,
                        IMapBase<TDto, TEntity> mapEntityToDto)
         {
             _repositorio = repositorio;
-            _mapper = mapper;
             _mapRequestToEntity = mapRequestToEntity;
             _mapEntityToDto = mapEntityToDto;
         }

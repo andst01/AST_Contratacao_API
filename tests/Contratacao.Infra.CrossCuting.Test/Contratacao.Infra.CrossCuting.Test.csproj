@@ -5,6 +5,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AutoMapperConfigTest.cs" />
+    <Compile Remove="DomainToDTOMappingProfileTest.cs" />
+    <Compile Remove="DTOToDomainMappingProfileTest.cs" />
+  </ItemGroup>
 <ItemGroup>
 		<!-- NUnit -->
 		<PackageReference Include="coverlet.collector" Version="6.0.4">

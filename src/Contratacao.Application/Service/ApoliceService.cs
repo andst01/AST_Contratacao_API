@@ -1,5 +1,5 @@
-﻿using AutoMapper;
-using Contratacao.Application.DTO;
+﻿using Contratacao.Application.DTO;
+using Contratacao.Application.Interfaces.Map;
 using Contratacao.Application.Interfaces.Service;
 using Contratacao.Application.Request;
 using Contratacao.Domain.Entidades;
@@ -12,23 +12,27 @@ namespace Contratacao.Application.Service
     public class ApoliceService : IApoliceService
     {
         private readonly IApoliceRepoitorio _apoliceRepoitorio;
-        private readonly IMapper _mapper;
+        private readonly IMapBase<Apolice, ApoliceRequest> _mapRequestToEntity;
+        private readonly IMapBase<ApoliceDTO, Apolice> _mapEntityToDTO;
         private readonly IRepositorioBase<Proposta> _propostaRepositorio;
 
         public ApoliceService(IApoliceRepoitorio apoliceRepoitorio,
                                   IRepositorioBase<Proposta> propostaRepositorio,
-                                  IMapper mapper)
+                                  IMapBase<Apolice, ApoliceRequest> mapRequestToEntity,
+                                  IMapBase<ApoliceDTO, Apolice> mapEntityToDTO)
         {
             _apoliceRepoitorio = apoliceRepoitorio;
             _propostaRepositorio = propostaRepositorio;
-            _mapper = mapper;
+            _mapRequestToEntity = mapRequestToEntity;
+            _mapEntityToDTO = mapEntityToDTO;
         }
 
         public async Task<ApoliceDTO> CriarApoliceAsync(ApoliceRequest request)
         {
             var retorno = new ApoliceDTO();
             retorno.Mensagem = new();
-            var apolice = _mapper.Map<Apolice>(request);
+            //var apolice = _mapper.Map<Apolice>(request);
+            var apolice = _mapRequestToEntity.Map(request);
             var proposta = await _propostaRepositorio.ObterPorIdAsync(apolice.IdProposta);
            
             if (proposta == null)
@@ -49,7 +53,8 @@ namespace Contratacao.Application.Service
             
             await _apoliceRepoitorio.SaveChangesAsync();
 
-            retorno = _mapper.Map<ApoliceDTO>(resultado);
+           // retorno = _mapper.Map<ApoliceDTO>(resultado);
+            retorno = _mapEntityToDTO.Map(resultado);
             retorno.Mensagem = new();
             retorno.Mensagem.Sucesso = true;
             retorno.Mensagem.Descricao = "Apólice criada com sucesso.";

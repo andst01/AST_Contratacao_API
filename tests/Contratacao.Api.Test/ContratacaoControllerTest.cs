@@ -86,7 +86,10 @@ namespace Contratacao.Api.Test
         {
             // Arrange
         
-            var lista = Fixture.Create<List<ApoliceDTO>>();
+            var lista = Fixture.Build<ApoliceDTO>()
+                            .Without(x => x.Proposta)
+                            .CreateMany(3)
+                            .ToList();
 
             _mockApp.Setup(a => a.ObterContratacaoPropostaClienteAsync())
                     .ReturnsAsync(lista);

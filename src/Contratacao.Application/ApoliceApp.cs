@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Contratacao.Application.DTO;
+﻿using Contratacao.Application.DTO;
 using Contratacao.Application.Interfaces;
 using Contratacao.Application.Interfaces.Map;
 using Contratacao.Application.Request;
@@ -16,10 +15,9 @@ namespace Contratacao.Application
         private readonly IApoliceRepoitorio _apoliceRepoitorio;
         private readonly IMapBase<ApoliceDTO, Apolice> _mapEntityToDto;
         public ApoliceApp(IApoliceRepoitorio apoliceRepoitorio,
-                          IMapper mapper,
                           IMapBase<Apolice, ApoliceRequest> mapRequestToEntity,
                           IMapBase<ApoliceDTO, Apolice> mapEntityToDto) 
-            : base(apoliceRepoitorio, mapper, mapRequestToEntity, mapEntityToDto)
+            : base(apoliceRepoitorio, mapRequestToEntity, mapEntityToDto)
         {
             _apoliceRepoitorio = apoliceRepoitorio;
             _mapEntityToDto = mapEntityToDto;

@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
-using AutoMapper;
 using Contratacao.Application.DTO;
+using Contratacao.Application.Interfaces.Map;
 using Contratacao.Application.Interfaces.Service;
 using Contratacao.Application.Request;
 using Contratacao.Application.Service;
@@ -18,7 +18,9 @@ namespace Contratacao.Application.Test
         private IFixture Fixture;
         private Mock<IApoliceRepoitorio> _mockApoliceRepoitorio;
         private Mock<IRepositorioBase<Proposta>> _mockPropostaRepositorio;
-        private Mock<IMapper> _mockMapper;
+        //private Mock<IMapper> _mockMapper;
+        private Mock<IMapBase<Apolice, ApoliceRequest>> _mockMapRequestToEntity;
+        private Mock<IMapBase<ApoliceDTO, Apolice>> _mockMapEntityToDTO;
         private IApoliceService _service;
 
         public ApoliceServiceTest()
@@ -28,10 +30,15 @@ namespace Contratacao.Application.Test
                 {
                     ConfigureMembers = true
                 });
+            _mockMapEntityToDTO = new Mock<IMapBase<ApoliceDTO, Apolice>>();
+            _mockMapRequestToEntity = new Mock<IMapBase<Apolice, ApoliceRequest>>();
             _mockApoliceRepoitorio = new Mock<IApoliceRepoitorio>();
             _mockPropostaRepositorio = new Mock<IRepositorioBase<Proposta>>();
-            _mockMapper = new Mock<IMapper>();
-            _service = new ApoliceService(_mockApoliceRepoitorio.Object, _mockPropostaRepositorio.Object, _mockMapper.Object);
+            //_mockMapper = new Mock<IMapper>();
+            _service = new ApoliceService(_mockApoliceRepoitorio.Object,
+                                            _mockPropostaRepositorio.Object, 
+                                            _mockMapRequestToEntity.Object,
+                                            _mockMapEntityToDTO.Object);
         }
 
        
@@ -55,9 +62,9 @@ namespace Contratacao.Application.Test
             apolice.IdProposta = 10;
             apolice.Status = EnumStatusApolice.Ativa;
 
-            _mockMapper
-                .Setup(m => m.Map<Apolice>(request))
-                .Returns(apolice);
+            //_mockMapper
+            //    .Setup(m => m.Map<Apolice>(request))
+            //    .Returns(apolice);
 
             _mockPropostaRepositorio
                 .Setup(r => r.ObterPorIdAsync(proposta.Id))
@@ -65,12 +72,21 @@ namespace Contratacao.Application.Test
 
 
 
-            var apoliceDTO = Fixture.Create<ApoliceDTO>();
+            var apoliceDTO = Fixture.Build<ApoliceDTO>()
+                .Without(x => x.Proposta)
+                .Create();
             apoliceDTO.IdProposta = 10;
             apoliceDTO.CodigoStatus = (int)EnumStatusApolice.Ativa;
 
-            _mockMapper.Setup(x => x.Map<ApoliceDTO>(It.IsAny<Apolice>()))
+            _mockMapRequestToEntity
+                .Setup(m => m.Map(request))
+                .Returns(apolice);
+
+            _mockMapEntityToDTO
+                .Setup(m => m.Map(apolice))
                 .Returns(apoliceDTO);
+            //_mockMapper.Setup(x => x.Map<ApoliceDTO>(It.IsAny<Apolice>()))
+            //    .Returns(apoliceDTO);
 
             _mockApoliceRepoitorio
                 .Setup(r => r.AdicionarAsync(It.IsAny<Apolice>()))

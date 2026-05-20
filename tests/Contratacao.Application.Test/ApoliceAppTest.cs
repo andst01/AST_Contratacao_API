@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
-using AutoMapper;
 using Bogus;
 using Contratacao.Application.DTO;
+using Contratacao.Application.Interfaces.Map;
 using Contratacao.Application.Request;
 using Contratacao.Domain.Entidades;
 using Contratacao.Domain.Enums;
@@ -14,38 +14,52 @@ namespace Contratacao.Application.Test
     public class ApoliceAppTests : AppBaseTest<ApoliceApp>
     {
         private Mock<IApoliceRepoitorio> _repositorioMock = null!;
-        private Mock<IMapper> _mapperMock = null!;
         private ApoliceApp _app = null!;
+        private Mock<IMapBase<Apolice, ApoliceRequest>> _mapRequestToEntityMock = null!;
+        private Mock<IMapBase<ApoliceDTO, Apolice>> _mapEntityToDtoMock = null!;
 
 
         [SetUp]
         public void Setup()
         {
             _repositorioMock = FreezeMock<IApoliceRepoitorio>();
-            _mapperMock = FreezeMock<IMapper>();
+            _mapRequestToEntityMock = new Mock<IMapBase<Apolice, ApoliceRequest>>();
+            _mapEntityToDtoMock = new Mock<IMapBase<ApoliceDTO, Apolice>>();
 
-            _app = CreateSut();
+            _app = new ApoliceApp(_repositorioMock.Object, 
+                                  _mapRequestToEntityMock.Object, 
+                                  _mapEntityToDtoMock.Object);
         }
 
         [Test]
         public async Task AdicionarAsync_DeveAdicionarERetornarViewModel()
         {
             var request = Fixture.Create<ApoliceRequest>();
-            var dto = Fixture.Create<ApoliceDTO>();
+            var dto = Fixture.Build<ApoliceDTO>()
+                .Without(d => d.Proposta)
+                .Create();
 
             var entity = Fixture.Build<Apolice>()
                         .Without(p => p.Proposta).Create();
 
-            _mapperMock
-                .Setup(m => m.Map<Apolice>(request))
+            //_mapperMock
+            //    .Setup(m => m.Map<Apolice>(request))
+            //    .Returns(entity);
+
+            _mapRequestToEntityMock
+                .Setup(m => m.Map(request))
                 .Returns(entity);
 
             _repositorioMock
                 .Setup(r => r.AdicionarAsync(entity))
                 .ReturnsAsync(entity);
 
-            _mapperMock
-                .Setup(m => m.Map<ApoliceDTO>(entity))
+            //_mapperMock
+            //    .Setup(m => m.Map<ApoliceDTO>(entity))
+            //    .Returns(dto);
+
+            _mapEntityToDtoMock
+                .Setup(m => m.Map(entity))
                 .Returns(dto);
 
             _repositorioMock.Setup(r => r.SaveChangesAsync())
@@ -61,18 +75,27 @@ namespace Contratacao.Application.Test
         public async Task AtualizarAsync_ComId_DeveAtualizar()
         {
             var request = Fixture.Create<ApoliceRequest>();
-            var dto = Fixture.Create<ApoliceDTO>();
+            var dto = Fixture.Build<ApoliceDTO>()
+                .Without(d => d.Proposta)
+                .Create();
+
             var entity = Fixture.Build<Apolice>()
                         .Without(p => p.Proposta).Create();
             var id = Fixture.Create<int>();
 
-            _mapperMock.Setup(m => m.Map<Apolice>(request))
+            //_mapperMock.Setup(m => m.Map<Apolice>(request))
+            //           .Returns(entity);
+
+            _mapRequestToEntityMock.Setup(m => m.Map(request))
                        .Returns(entity);
 
             _repositorioMock.Setup(r => r.AtualizarAsync(entity, id))
                             .ReturnsAsync(entity);
 
-            _mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))
+            //_mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))
+            //           .Returns(dto);
+
+            _mapEntityToDtoMock.Setup(m => m.Map(entity))
                        .Returns(dto);
 
             _repositorioMock.Setup(r => r.SaveChangesAsync())
@@ -108,13 +131,16 @@ namespace Contratacao.Application.Test
             var entities = Fixture.Build<Apolice>()
                                 .Without(p => p.Proposta)
                                 .CreateMany<Apolice>(3).ToList();
-            var dto = Fixture.CreateMany<ApoliceDTO>(3).ToList();
+            var dto = Fixture.Build<ApoliceDTO>()
+                .Without(d => d.Proposta)
+                .CreateMany(3)
+                .ToList();
 
             _repositorioMock.Setup(r => r.ObterTodosAsync())
                             .ReturnsAsync(entities);
 
-            _mapperMock.Setup(m => m.Map<List<ApoliceDTO>>(entities))
-                       .Returns(dto);
+            //_mapEntityToDtoMock.Setup(m => m.Map<List<ApoliceDTO>>(entities))
+            //           .Returns(dto);
 
             var result = await _app.ObterTodosAsync();
 
@@ -147,13 +173,18 @@ namespace Contratacao.Application.Test
                                 .Generate());
                         }).Generate(3);
 
-            var dto = Fixture.CreateMany<ApoliceDTO>(3).ToList();
+            var dto = Fixture.Build<ApoliceDTO>()
+                .Without(d => d.Proposta)
+                .CreateMany(3)
+                .ToList();
 
             _repositorioMock.Setup(r => r.ObterContratacaoPropostaClienteAsync())
                             .ReturnsAsync(entities);
 
-            _mapperMock.Setup(m => m.Map<List<ApoliceDTO>>(entities))
-                       .Returns(dto);
+            //_mapperMock.Setup(m => m.Map<List<ApoliceDTO>>(entities))
+            //           .Returns(dto);
+
+
 
             var result = await _app.ObterContratacaoPropostaClienteAsync();
 
@@ -164,7 +195,10 @@ namespace Contratacao.Application.Test
         [Test]
         public async Task ObterPorIdAsync_DeveRetornarLista()
         {
-            var dto = Fixture.Create<ApoliceDTO>();
+            var dto = Fixture.Build<ApoliceDTO>()
+                .Without(d => d.Proposta)
+                .Create();
+
             var entity = Fixture.Build<Apolice>()
                                 .Without(p => p.Proposta)
                                 .Create<Apolice>();
@@ -172,10 +206,14 @@ namespace Contratacao.Application.Test
             _repositorioMock.Setup(r => r.ObterPorIdAsync(entity.Id))
                             .ReturnsAsync(entity);
 
-            _mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))
+            //_mapperMock.Setup(m => m.Map<ApoliceDTO>(entity))
+            //           .Returns(dto);
+
+            _mapEntityToDtoMock.Setup(m => m.Map(entity))
                        .Returns(dto);
 
             var result = await _app.ObterPorIdAssyn(entity.Id);
+
 
             Assert.NotNull(result);
         }
